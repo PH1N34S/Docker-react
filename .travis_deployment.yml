@@ -1,0 +1,39 @@
+sudo: required
+services:
+  - docker
+
+language: generic
+
+before_install:
+  - docker build -t manish/docker-react -f Dockerfile.dev .
+
+script:
+  - docker run -e CI=true manish/docker-react npm run test
+
+deploy:
+  provide: elasticbeanstalk
+  region: "us-east-1"   # specify the region where elastic beanstalk was created. check for the url of beanstalk application
+  app: "docker"  # the EBS name that was created in the AWS
+  env: "Socker-env" # mentioned the environment name
+  # Check the above values from the path 
+  bucket_name: "" # Travis zip all the files in the repo and copies it to the S3 bucket. Travis pokes the EBS and tells that it posted the zip file
+  # Goto Services and click S3, look and the list and check for bucketname as elasticbeanstalk-us-west-1....
+  bucket_path: "docker" # for the first time use bucket name same as the app name
+  on:
+    branch: main
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
+
+# generate API keys to gives travis access to deploy apps on aws
+# search for IAM
+# User Section - use by travis CI
+# add user ; select AWS access types : access types : Programmatic access
+# Set permissions: Attach existing policies > search beanstalk, in desc use provide full access to AWS EBS
+# Create User
+# NOTE: note down your Access Key ID and Secret Access Key  ,,,, note Secret access key is shown only one time and keep with yourself
+
+
+# in travis ci, go to your project > more options > settings
+# Add environment Variables
+# AWS_ACCESS_KEY ; make sure to uncheck Display value in Build log
+# AWS_SECRET_KEY ; make sure to uncheck Display value in Build log
