@@ -1,0 +1,11 @@
+sudo: required
+services:
+  - docker
+
+language: generic
+
+before_install:
+  - docker build -t PH1N34S/Docker-react -f Dockerfile.dev .
+
+script:
+  - docker run -e CI=true PH1N34S/Docker-react npm run test
