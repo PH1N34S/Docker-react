@@ -5,7 +5,7 @@ services:
 language: generic
 
 before_install:
-  - docker build -t PH1N34S/Docker-react -f Dockerfile.dev .
+  - docker build -t manish/Docker-react -f Dockerfile.dev .
 
 script:
-  - docker run -e CI=true PH1N34S/Docker-react npm run test
+  - docker run -e CI=true manish/Docker-react npm run test
